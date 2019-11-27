@@ -1,0 +1,106 @@
+Public Sub RunThePowerpointTour()
+     '   Constant for the title on the userform
+    Const szAppName As String = "PowerPoint Window Tour"
+     
+     '   Constant for the Powerpoint file to load
+    Const szShowName As String = "TestpptShow.pptx"
+     
+     '   PowerPoint Constant
+    Const ppShowTypeInWindow = 1000
+     
+     '   Late binding to avoid setting reference:
+    Dim oPPTApp As Object
+    Dim oPPTPres As Object
+     
+     
+     '   Store this Excel file path, and add a path seperator if needed:
+    Dim szShowPath As String
+    szShowPath = FixTrailingSeparator(ThisWorkbook.Path)
+     
+     
+     '   Create the path to the where the show should be:
+    Dim szValidShowPath As String
+    szValidShowPath = szShowPath & szShowName
+     
+     
+     '   Initialize an instance of Powerpoint
+    On Error Resume Next
+    Set oPPTApp = CreateObject("PowerPoint.Application")
+     
+     
+     '   If we got one okay, continue
+    If Not oPPTApp Is Nothing Then
+         
+         
+         '       With our new instance, open the preset ppt file:
+        Set oPPTPres = oPPTApp.Presentations.Open(szValidShowPath, , , False)
+         
+         
+         '       If it was found okay, continue on:
+        If Not oPPTPres Is Nothing Then
+             
+             
+             '           What to do with the presentation?
+            With oPPTPres
+                 
+                With .SlideShowSettings
+                     
+                     
+                     '                    Show it in it's own window
+                    .ShowType = ppShowTypeInWindow
+                    .Left = 420
+                    .Top = 120
+                     
+                     '                    Run it of course
+'                    .Run
+                With .Run
+
+                    .Left = 340
+            
+                    .Top = 200
+            
+                    .Width = 600
+            
+                    .Height = 400
+            
+                End With
+                     
+                     
+                End With
+                 
+            End With
+             
+        Else
+             
+             '           if the presentation could not be shown:
+            MsgBox "Presentation could not be found", 16, szAppName
+             
+        End If
+         
+    Else
+         
+         '       If Powerpoint is possibly not available on the machine:
+        MsgBox "Powerpoint could not be found", 16, szAppName
+         
+    End If
+     
+     
+     '   Explicitly clear memory
+    Set oPPTApp = Nothing
+    Set oPPTPres = Nothing
+End Sub
+ 
+ 
+Public Function FixTrailingSeparator(Path As String, _
+    Optional PathSeparator As String = "\") As String
+     '   Xcav8r
+     
+    Select Case Right(Path, 1)
+    Case PathSeparator
+        FixTrailingSeparator = Path
+    Case Else
+        FixTrailingSeparator = Path & PathSeparator
+    End Select
+     
+End Function
+
